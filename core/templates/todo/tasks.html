@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>all tasks</title>
+</head>
+<body>
+    <h1>all tasks</h1>
+    {% for task in tasks %}
+        <p>{{ task.content }}</p>
+        <small>updated on {{ task.updated_date }}</small>
+    {% endfor %}
+</body>
+</html>
