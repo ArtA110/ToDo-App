@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from todo.forms import TaskCreateForm
-from accounts.models import Profile,User
+from accounts.models import Profile
 from django.http import HttpResponse
 # Create your views here.
 def createTask(request):
