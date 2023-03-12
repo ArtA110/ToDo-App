@@ -16,6 +16,9 @@ def createTask(request):
             return redirect("/todo/tasks/")
     return render(request, 'todo/task_creation.html', context={'form': TaskCreateForm})
 
+
+def indexView(request):
+    return render(request, 'index.html')
 @login_required
 def updateTask(request, pk):
     profile = get_object_or_404(Profile, user=request.user)

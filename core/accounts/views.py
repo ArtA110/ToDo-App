@@ -57,7 +57,7 @@ def login_view(request):
 def logout_view(request):
     if request.user.is_authenticated:
         logout(request)
-        return HttpResponse('logged out')
+        return HttpResponse('logged out<br><a href="/accounts/login">login again</a>')
     return redirect('/accounts/login/')
 
 
