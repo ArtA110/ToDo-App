@@ -1,10 +1,11 @@
 from django.shortcuts import render
 from todo.forms import TaskCreateForm
 from accounts.models import Profile
-from django.shortcuts import get_object_or_404
-from django.http import HttpResponse
+from django.shortcuts import get_object_or_404, redirect
+from django.contrib.auth.decorators import login_required
 from todo.models import Task
 # Create your views here.
+@login_required
 def createTask(request):
     if request.method == 'POST':
         form = TaskCreateForm(data=request.POST)
@@ -12,21 +13,28 @@ def createTask(request):
             form = form.save(commit = False)
             form.user = Profile.objects.get(user = request.user)
             form.save()
-            return HttpResponse('Done!')
+            return redirect("/todo/tasks/")
     return render(request, 'todo/task_creation.html', context={'form': TaskCreateForm})
 
+@login_required
 def updateTask(request, pk):
+    profile = get_object_or_404(Profile, user=request.user)
     task = get_object_or_404(Task, pk=pk)
-    task.isDone = not task.isDone
-    task.save()
-    return HttpResponse(f"status changed to {task.isDone}")
+    if task.user == profile:
+        task.isDone = not task.isDone
+        task.save()
+    return redirect("/todo/tasks/")
 
+@login_required
 def deleteTask(request, pk):
+    profile = get_object_or_404(Profile, user=request.user)
     task = get_object_or_404(Task, pk=pk)
-    content = task.content
-    task.delete()
-    return HttpResponse(f"task '{content}' deleted")
+    if task.user == profile:
+        task.delete()
+    return redirect("/todo/tasks/")
 
+@login_required
 def showTasks(request):
-    tasks = Task.objects.filter(user = Profile.objects.get(user=request.user))
-    return render(request,'todo/tasks.html', context={'tasks': tasks})
+    profile = get_object_or_404(Profile, user=request.user)
+    tasks = Task.objects.filter(user = profile)
+    return render(request,'todo/tasks.html', context={'tasks': tasks, 'profile': profile})

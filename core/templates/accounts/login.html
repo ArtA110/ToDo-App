@@ -25,8 +25,8 @@
 {% block content %}
 <main class="form-signin text-center">
     <form method="POST">
-        <a href="https://github.com/ArtA110"><img class="mb-4 rounded-circle border-3 border-white shadow p-1 mb" src="https://avatars.githubusercontent.com/u/65806485?s=400&u=149480b3e9c3b1e5cf193fe7e6da63fd86b1adbc&v=4" alt="" width="150"
-            height="150"></a>
+        <img class="mb-4 rounded-circle border-3 border-white shadow p-1 mb" src="https://static.vecteezy.com/system/resources/thumbnails/000/439/863/small/Basic_Ui__28186_29.jpg" alt="" width="150"
+            height="150">
         <h1 class="h3 mb-3 fw-normal">Please Sign In</h1>
         {% csrf_token %}
         <div class="form-floating">
@@ -55,7 +55,7 @@
             {% for field in form %}
             {% if field.errors %}
             {% for error in field.errors %}
-            <li><a href="#id_{{ field.name }}" class="error">{{ error|escape }}</a></li>
+            <li><a style="color: red" href="#id_{{ field.name }}" class="error">{{ error|escape }}</a></li>
             {% endfor %}
             {% endif %}
             {% endfor %}

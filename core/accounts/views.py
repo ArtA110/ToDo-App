@@ -2,6 +2,7 @@ from django.shortcuts import render
 from accounts.forms import UserForm, ProfileForm, LoginForm
 from django.http import HttpResponseRedirect, HttpResponse
 from django.contrib.auth import authenticate, login, logout
+from django.shortcuts import redirect
 
 from .models import User
 
@@ -30,14 +31,13 @@ def complete_profile_view(request):
             profile = form.save(commit=False)
             profile.user = request.user
             profile.save()
-            return HttpResponse('Done!')
+            return redirect('/todo/tasks/')
     profile_form = ProfileForm()
     return render(request, 'accounts/complete_profile.html', context={'profile_form': profile_form})
 
 def login_view(request):
     if request.method == 'POST':
         form = LoginForm(data=request.POST)
-        print('here')
         if form.is_valid():
 
             email = form.cleaned_data['username']
@@ -45,7 +45,7 @@ def login_view(request):
             user = authenticate(request,email=email, password=password)
             if user is not None:
                 login(request, user)
-                return HttpResponse('logged in')
+                return redirect('/todo/tasks/')
             return HttpResponse('something went wrong')
         else:
             return render(request, 'accounts/login.html', context={'form': form})
@@ -58,6 +58,6 @@ def logout_view(request):
     if request.user.is_authenticated:
         logout(request)
         return HttpResponse('logged out')
-    return HttpResponse('login first')
+    return redirect('/accounts/login/')
 
 
