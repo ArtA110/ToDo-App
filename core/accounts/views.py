@@ -2,6 +2,7 @@ from django.shortcuts import render
 from accounts.forms import UserForm, ProfileForm, LoginForm
 from django.http import HttpResponseRedirect, HttpResponse
 from django.contrib.auth import authenticate, login, logout
+
 from .models import User
 
 
@@ -14,13 +15,17 @@ def signup_view(request):
             login(request, user)
 
             return HttpResponseRedirect('/accounts/complete-profile/')
+        else:
+            return render(
+                request, "accounts/signup.html", {"form": form}
+            )
     user_form = UserForm()
     return render(request, 'accounts/signup.html', context={'user_form': user_form})
 
 
 def complete_profile_view(request):
     if request.method == 'POST':
-        form = ProfileForm(data=request.POST)
+        form = ProfileForm(request.POST, request.FILES)
         if form.is_valid():
             profile = form.save(commit=False)
             profile.user = request.user
@@ -42,6 +47,9 @@ def login_view(request):
                 login(request, user)
                 return HttpResponse('logged in')
             return HttpResponse('something went wrong')
+        else:
+            return render(request, 'accounts/login.html', context={'form': form})
+
 
     return render(request,'accounts/login.html', context={'form': LoginForm})
 
