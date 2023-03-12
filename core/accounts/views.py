@@ -3,7 +3,7 @@ from accounts.forms import UserForm, ProfileForm, LoginForm
 from django.http import HttpResponseRedirect, HttpResponse
 from django.contrib.auth import authenticate, login, logout
 from django.shortcuts import redirect
-
+from accounts.models import Profile
 from .models import User
 
 
@@ -25,15 +25,19 @@ def signup_view(request):
 
 
 def complete_profile_view(request):
-    if request.method == 'POST':
-        form = ProfileForm(request.POST, request.FILES)
-        if form.is_valid():
-            profile = form.save(commit=False)
-            profile.user = request.user
-            profile.save()
-            return redirect('/todo/tasks/')
-    profile_form = ProfileForm()
-    return render(request, 'accounts/complete_profile.html', context={'profile_form': profile_form})
+    try:
+        Profile.objects.get(user=request.user)
+        return redirect('/todo/tasks/')
+    except:
+        if request.method == 'POST':
+            form = ProfileForm(request.POST, request.FILES)
+            if form.is_valid():
+                profile = form.save(commit=False)
+                profile.user = request.user
+                profile.save()
+                return redirect('/todo/tasks/')
+        profile_form = ProfileForm()
+        return render(request, 'accounts/complete_profile.html', context={'profile_form': profile_form})
 
 def login_view(request):
     if request.method == 'POST':

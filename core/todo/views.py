@@ -38,6 +38,9 @@ def deleteTask(request, pk):
 
 @login_required
 def showTasks(request):
-    profile = get_object_or_404(Profile, user=request.user)
-    tasks = Task.objects.filter(user = profile)
+    try:
+        profile = Profile.objects.get(user=request.user)
+    except:
+        return redirect("/accounts/complete-profile/")
+    tasks = Task.objects.filter(user=profile)
     return render(request,'todo/tasks.html', context={'tasks': tasks, 'profile': profile})
