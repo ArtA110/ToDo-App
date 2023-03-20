@@ -24,6 +24,7 @@ urlpatterns = [
     path('', indexView),
     path('accounts/', include('accounts.urls')),
     path('todo/', include('todo.urls')),
+    path('api-auth/', include('rest_framework.urls')),
 ]
 if settings.DEBUG:
     urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
