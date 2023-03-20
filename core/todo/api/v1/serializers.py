@@ -12,9 +12,11 @@ class TaskSerializer(serializers.ModelSerializer):
     def get_absolute_url(self, obj=None):
         request = self.context.get('request')
         url = request.build_absolute_uri()
-        if 'task/' in url:
+        try:
+            int(url[-2])
             return url
-        return request.build_absolute_uri(obj.pk).replace('tasks', 'task')+'/'
+        except ValueError:
+            return request.build_absolute_uri(obj.pk)
 
     def to_representation(self, instance):
         request = self.context.get('request')
