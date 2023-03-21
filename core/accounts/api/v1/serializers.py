@@ -13,6 +13,7 @@ class ProfileSerializer(serializers.ModelSerializer):
 
 class UserSerializer(serializers.ModelSerializer):
     profile = ProfileSerializer()
+    absolute_url = serializers.SerializerMethodField(method_name='get_absolute_url')
 
     password = serializers.CharField(write_only=True, required=True,
                                      style={'input_type': 'password', 'placeholder': 'Password'})
@@ -21,8 +22,17 @@ class UserSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ['email', 'is_active', 'created_date', 'updated_date', 'password', 'confirm_password', 'profile']
+        fields = ['id', 'email', 'is_active', 'created_date', 'updated_date', 'password', 'confirm_password', 'profile',
+                  'absolute_url']
 
+    def get_absolute_url(self, obj=None):
+        request = self.context.get('request')
+        url = request.build_absolute_uri()
+        try:
+            int(url[-2])
+            return url
+        except ValueError:
+            return request.build_absolute_uri(obj.pk)
     def to_representation(self, instance):
         request = self.context.get('request')
         rep = super().to_representation(instance)
